@@ -1,10 +1,9 @@
-from persons import Person, Fellow, Staff
-from rooms import Room, Office, LivingSpace
-
-
 class Amity(object):
 
     def __init__(self):
+        self.all_person = []
+        self.all_allocation = []
+        self.all_rooms = []
         pass
 
     def add_person(self, fname, lname, role, want_accomondation):
