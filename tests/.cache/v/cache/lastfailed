@@ -1,0 +1,9 @@
+{
+  "allocate_test.py::AmityTest::test_add_person": true, 
+  "allocate_test.py::AmityTest::test_add_person_can_only_be_staff_or_fellow": true, 
+  "allocate_test.py::AmityTest::test_add_person_name_and_role_are_both_string": true, 
+  "allocate_test.py::AmityTest::test_allocate_person": true, 
+  "allocate_test.py::AmityTest::test_create_room": true, 
+  "allocate_test.py::AmityTest::test_reallocate_a_person": true, 
+  "allocate_test.py::AmityTest::test_staff_cannot_be_allocated_a_living_space": true
+}

@@ -1,6 +1,6 @@
 class Room(object):
 
-    def __init__(self, name, status):
+    def __init__(self, name=None, status=None):
         self.name = name
         self.status = status
 

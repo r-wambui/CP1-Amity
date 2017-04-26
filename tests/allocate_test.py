@@ -1,37 +1,60 @@
 import unittest
-from CP1.allocate import Amity
+from CP1_Amity.allocate import Amity
+from CP1_Amity.persons import Person
+from CP1_Amity.rooms import Room
 
 
-class TestAmity(unittest.TestCase):
+class AmityTest(unittest.TestCase):
 
     def setUp(self):
         self.amity = Amity()
+        self.person = Person()
+        self.room = Room()
 
     def test_add_person(self):
         """
         People can be added to Amity system """
-        self.assertEqual(self.amity.add_person(
-            'Rose', 'Wambui', 'Fellow', 'Y'), 'Person added successfully')
+
+        self.previous_count = len(self.amity.all_person)
+        for person in self.amity.all_person:
+            self.assertNotIn('Rose', person.fname)
+        self.amity.add_person(
+            'Rose', 'Wambui', 'Fellow', 'Y')
+        self.current_count = len(self.amity.all_person)
+        self.assertGreater(self.current_count, self.previous_count)
 
     def test_create_room(self):
         """
         Rooms can be created """
-        self.assertEqual(self.amity.create_room(
-            'Vanhalla', 'LivingSpace'), 'Room created successfully')
+        self.prevoius_room_count = len(self.amity.all_rooms)
+        for room in self.amity.all_rooms:
+            self.assertNotIn('Vanhalla', room.name)
+        self.amity.create_room(
+            'Vanhalla', 'LivingSpace')
+        self.current_room_count = len(self.amity.all_rooms)
+        self.assertEqual(self.current_room_count - 1, self.prevoius_room_count)
 
     def test_allocate_person(self):
+        """
+        A fellow can be allocated to a living space """
+        self.previous_allocate_count = len(self.amity.all_allocation)
         self.amity.create_room('Java', 'LivingSpace')
         self.amity.add_person('Rose', 'Wambui', 'Fellow', 'Y')
+        self.amity.allocate_person(
+            'Rose', 'Wambui', 'Fellow', 'Java')
+        self.current_allocate_count = len(self.amity.all_allocation)
 
-        self.assertEqual(self.amity.allocate_person(
-            'Rose', 'Wambui', 'Fellow', 'Java'),
-            'Person allocated successfully')
+        self.assertEqual(self.previous_allocate_count,
+                         self.current_allocate_count + 1)
 
     def test_reallocate_a_person(self):
+        """
+        A person can move from one room to another """
         self.amity.create_room('Cairo', 'office')
-        self.amity.create_room('Asmara', 'office')
         self.amity.add_person('Rose', 'Wambui', 'Fellow', 'N')
         self.amity.allocate_person('Rose', 'Wambui', 'Fellow', 'Cairo')
+
+
         self.assertEqual(self.amity.reallocate_person(
             'Rose', 'Wambui', 'Fellow', 'Asmara'),
             'You have been reallocated to a new room')
