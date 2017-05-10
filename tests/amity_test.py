@@ -1,6 +1,6 @@
 import unittest
 
-from CP1_Amity.amity import Amity
+from models.amity import Amity
 
 
 class AmityTest(unittest.TestCase):
