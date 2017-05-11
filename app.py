@@ -7,8 +7,8 @@ Usage:
     amity print_room <room_name>
     amity print_unallocated [--o=<file_name>]
     amity load_people <filename>
-    amity save_state [--database=<sqlite_database>]
-    amity load_state
+    amity save_state <db_name>
+    amity load_state <db_name>
     amity (-i | --interactive)
     amity (-h | --help | --version)
 
@@ -91,7 +91,7 @@ class Interactive(cmd.Cmd):
         last_name = args['<last_name>']
         job_type = args['<job_type>']
         want_accomodation = args['<want_accomodation>']
-        amity.add_person(first_name, last_name, job_type, want_accomodation)
+        print(amity.add_person(first_name, last_name, job_type, want_accomodation))
 
     @docopt_cmd
     def do_reallocate_person(self, args):
@@ -100,14 +100,14 @@ class Interactive(cmd.Cmd):
         first_name = args['<first_name>']
         room_name = args['<room_name>']
 
-        amity.reallocate_person(first_name, room_name)
+        print(amity.reallocate_person(first_name, room_name))
 
     @docopt_cmd
     def do_load_people(self, args):
         """Usage: load_people <file_name>"""
 
         file_name = args['<file_name>']
-        amity.load_people(file_name)
+        print (amity.load_people(file_name))
 
     @docopt_cmd
     def do_print_allocations(self, args):
@@ -134,27 +134,24 @@ class Interactive(cmd.Cmd):
         room_name = args["<room_name>"]
         amity.print_room(room_name)
 
-    # @docopt_cmd
-    # def do_save_state(self, args):
-    #     """
-    #     Usage: save_state [--database=<sqlite_database>]
+    @docopt_cmd
+    def do_save_state(self, args):
+        """
+        Usage: save_state <db_name>
 
-    #     Options:
-    #     -d, --database=<sqlite_database>  Save state to specified database [default: amity_db]
-    #     """
+        """
 
-    #     db_name = args["--database"]
-    #     amity.save_state(db_name)
+        db_name = args["<db_name>"]
+        amity.save_state(db_name)
 
-    # @docopt_cmd
-    # def do_load_state(self, args):
-    #     """
-    #     Usage: load_state [--load=<database>]
+    @docopt_cmd
+    def do_load_state(self, args):
+        """
+        Usage: load_state [<db_name>]
 
-    #     Options:
-    #     -l, --load=<database>  Load data from specified database [default: amity_db]
-    #     """
-    #     amity.load_state(args["--load"])
+        """
+        db_name = args["<db_name>"]
+        amity.load_state(db_name)
 
     # def do_clear(self, arg):
     #     """Clears screen"""
