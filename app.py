@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """
 Usage:
-    amity create_room <room_name> <room_type> <job_type> [<want_accomodation>]
+    amity add_person <first_name> <last_name> <job_type> [<want_accomodation>]
+    amity create_room <room_name> <room_type>
     amity print_allocations [--o=<file_name>]
     amity reallocate_person <first_name><room_name>
     amity print_room <room_name>
@@ -15,8 +16,6 @@ Usage:
 Options:
     -i, --interactive  Interactive Mode
     -h, --help  Show this screen and exit.
-    -a, --wants_accomodation=<opt>  Person wants accomodation [default: N]
-e state to database [default: Amity_database.db]
 """
 
 import sys
@@ -67,7 +66,7 @@ def intro():
            'blue',)
     print("Welcome to Amity! Here is a list of commands to get you started." +
           " Type 'help' anytime to access documented commands")
-    cprint(__doc__, 'blue')
+    cprint(__doc__, 'green')
 
 
 class Interactive(cmd.Cmd):
