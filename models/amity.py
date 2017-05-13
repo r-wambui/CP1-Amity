@@ -34,7 +34,7 @@ class Amity(object):
     def allocate_office(self):
         if len(self.vacant_offices) > 0 and len(self.unallocated_persons) > 0:
             secure_random = random.SystemRandom()
-            person = secure_random.choice(self.unallocated_persons)
+            person = self.unallocated_persons[-1]
             office = secure_random.choice(self.vacant_offices)
 
             if office.limit > len(office.occupants):
@@ -49,7 +49,7 @@ class Amity(object):
     def allocate_livingspace(self):
         if len(self.vacant_livingspaces) > 0 and len(self.unaccomodated_fellows) > 0:
             secure_random = random.SystemRandom()
-            person = secure_random.choice(self.unaccomodated_fellows)
+            person = self.unaccomodated_fellows[-1]
             livingspace = secure_random.choice(self.vacant_livingspaces)
 
             if livingspace.limit > len(livingspace.occupants):
@@ -60,7 +60,7 @@ class Amity(object):
                 self.vacant_livingspaces.remove(livingspace)
                 print ('A livingspace can only accomodate 4 fellows')
 
-    def add_person(self, first_name, last_name, job_type, want_accomodation):
+    def add_person(self, first_name, last_name, job_type, want_accomodation=None):
         if type(first_name) == str and type(last_name) == str and type(job_type) == str:
             if [person for person in self.persons if first_name.upper() == person.first_name.upper() and last_name.upper() == person.last_name.upper()]:
                 print('The person exists')
@@ -75,7 +75,6 @@ class Amity(object):
                 print ('Person added successfully')
 
                 if want_accomodation == 'Y':
-                    print ('A staff cannot be allocated a living space')
                     return 'A staff cannot be allocated a living space'
 
             elif job_type == 'FELLOW' or job_type == 'fellow':
@@ -94,7 +93,6 @@ class Amity(object):
                     pass
 
             else:
-                print('The person role can only be a staff or a fellow')
                 return 'The person role can only be a staff or a fellow'
 
         else:
@@ -103,7 +101,7 @@ class Amity(object):
 
     def create_room(self, room_name, room_type):
         if type(room_name) == str and type(room_type) == str:
-            if [room for room in self.rooms if room_name.upper() == room.room_name.upper() and room_type == room.room_type]:
+            if [room for room in self.rooms if room_name.upper() == room.room_name.upper() and room_type.upper() == room.room_type.upper()]:
                 print("{} Already created.".format(room_name))
                 return 'Room already created'
             if room_type == 'office' or room_type == 'OFFICE':
@@ -111,7 +109,6 @@ class Amity(object):
                 self.rooms.append(room)
                 self.offices.append(room)
                 self.vacant_offices.append(room)
-                print('Room created successfully')
                 return 'Room created successfully'
 
             elif room_type == 'livingspace' or room_type == 'LIVINGSPACE':
@@ -123,65 +120,103 @@ class Amity(object):
                 print('Room created successfully')
                 return 'Room created successfully'
             else:
-                print ('room type can only be an office or livingspace')
                 return 'room type can only be an office or livingspace'
         else:
-            print('Invalid Input')
             return 'Invalid Input'
 
-    def get_room(self, first_name):
+    def get_room(self, first_name, last_name):
         for room in self.rooms:
-            if [person for person in room.occupants if first_name.upper() == person.first_name.upper()]:
+            if [person for person in room.occupants if person.first_name.upper() and last_name.upper() == person.last_name.upper()]:
                 return room
 
-    def reallocate_person(self, first_name, room_name):
-        for room in self.rooms:
-            # check type of room_name - office or living space
-            if room.room_type == 'OFFICE':
-                if [new_room for new_room in self.livingspaces if room_name.upper() == new_room.room_name.upper()]:
-                    return 'You cannot be reallocated from office to a living space'
-                # check if the office exist
-                if not [new_room for new_room in self.offices if room_name.upper() == new_room.room_name.upper()]:
-                    return '{} does not exist '.format(room_name)
-                # check if the new_office has vacancy
-                if not [new_room for new_room in self.vacant_offices if room_name.upper() == new_room.room_name.upper()]:
-                    return '{} office has no vacancy '.format(room_name)
-            # check if the person is an occupant of new room
-                if [person for person in new_room.occupants if first_name.upper()== person.first_name.upper()]:
-                    return 'you cannot be reallocated to the same room'
+    def reallocate_person(self, first_name, last_name, room_name):
+        """ reallocate a person to a new vacant office"""
+        # list comprehension which check if the person exist
+        person = [person for person in self.persons
+                  if person.first_name.upper() == first_name.upper()
+                  and person.last_name.upper() == last_name.upper()]
+
+        # list comprehension which chech if the new room exist
+        new_room = [new_room for new_room in self.rooms
+                    if new_room.room_name.upper() == room_name.upper()]
+        if not person:
+            return 'Person does not exist'
+
+        elif not new_room:
+            return 'the new room does not exist'
+
+        # check if the person is an occupant of the new room
+        elif [occupant for occupant in new_room[0].occupants
+            if occupant.first_name.upper() == first_name.upper()
+                and occupant.last_name.upper() == last_name.upper()]:
+            return 'you cannot be reallocated to the same room'
+
+        # check the vacancy of the room
+        elif new_room[0].room_type == 'OFFICE' and len(new_room[0].occupants) is new_room[0].limit:
+            return 'The office has no vacancy'
+
+        elif new_room[0].room_type == 'LIVINGSPACE' and len(new_room[0].occupants) is new_room[0].limit:
+            return 'The livingspace has no vacancy'
+
+        else:
+            room = [room for room in self.rooms if person[0] in room.occupants]
+            if room:
+                if room[0].room_type == new_room[0].room_type:
+                    new_room[0].occupants.append(person[0])
+                    room[0].occupants.remove(person[0])
+                    return'You have been reallocated to a new room'
                 else:
-                    if self.get_room(first_name.upper()):
-                        for occupant in room.occupants:
-                            if occupant.first_name.upper() == first_name.upper():
-                                self.get_room(
-                                    first_name.upper()).occupants.remove(occupant)
-                                new_room.occupants.append(occupant)
-                                return'You have been reallocated to a new room'
-                    else:
-                        return 'Person not allocated or does not exist'
+                    return 'You can only be reallocated to the same room_type'
+            else:
+                return 'person not allocated'
 
-            elif room.room_type == 'LIVINGSPACE':
-                if [new_room for new_room in self.offices if room_name == new_room.room_name]:
-                    return 'You cannot be reallocated from livingspace to an office'
+        # for room in self.rooms:
+        #     # check type of room_name - office or living space
+        #     if room.room_type == 'OFFICE':
+        #         if [new_room for new_room in self.livingspaces if room_name.upper() == new_room.room_name.upper()]:
+        #             return 'You cannot be reallocated from office to a living space'
+        #         # check if the office exist
+        #         if not [new_room for new_room in self.offices if room_name.upper() == new_room.room_name.upper()]:
+        #             return '{} does not exist '.format(room_name)
+        #         # check if the new_office has vacancy
+        #         if len(new_room.occupants) is new_room.limit:
+        #             return '{} office has no vacancy '.format(room_name)
+        #     # check if the person is an occupant of new room
+        #         elif [person for person in new_room.occupants if first_name.upper()== person.first_name.upper() and last_name.upper()==person.last_name.upper()]:
+        #             return 'you cannot be reallocated to the same room'
+        #         else:
+        #             if self.get_room(first_name.upper()):
+        #                 for occupant in room.occupants:
+        #                     if occupant.user_id.upper() == first_name.upper():
+        #                         self.get_room(
+        #                             user_id.upper()).occupants.remove(occupant)
+        #                         new_room.occupants.append(occupant)
+        #                         return'You have been reallocated to a new room'
+        #             else:
+        #                 return 'Person not allocated or does not exist'
 
-                if not [new_room for new_room in self.livingspaces if room_name == new_room.room_name]:
-                    return '{}does not exist'.format(room_name)
+        #     elif room.room_type == 'LIVINGSPACE':
+        #         if [new_room for new_room in self.offices if room_name == new_room.room_name]:
+        # return 'You cannot be reallocated from livingspace to an office'
 
-                if not [new_room for new_room in self.vacant_livingspaces if room_name == new_room.room_name]:
-                    return '{} livingspace has no vacancy '.format(room_name)
+        #         if not [new_room for new_room in self.livingspaces if room_name == new_room.room_name]:
+        #             return '{}does not exist'.format(room_name)
 
-                if [person for person in new_room.occupants if first_name == person.first_name]:
-                    return 'you cannot be reallocated to the same room'
-                else:
-                    if self.get_room(first_name.upper()):
-                        for occupant in room.occupants:
-                            if occupant.first_name.upper() == first_name.upper():
-                                self.get_room(
-                                    first_name.upper()).occupants.remove(occupant)
-                                new_room.occupants.append(occupant)
-                                return'You have been reallocated to a new room'
-                    else:
-                        return 'Person not allocated or does not exist'
+        #         if not [new_room for new_room in self.vacant_livingspaces if room_name == new_room.room_name]:
+        #             return '{} livingspace has no vacancy '.format(room_name)
+
+        #         if [person for person in new_room.occupants if first_name == person.first_name]:
+        #             return 'you cannot be reallocated to the same room'
+        #         else:
+        #             if self.get_room(first_name.upper()):
+        #                 for occupant in room.occupants:
+        #                     if occupant.first_name.upper() == first_name.upper():
+        #                         self.get_room(
+        #                             first_name.upper()).occupants.remove(occupant)
+        #                         new_room.occupants.append(occupant)
+        #                         return'You have been reallocated to a new room'
+        #             else:
+        #                 return 'Person not allocated or does not exist'
 
     def load_people(self, file_name):
         try:
