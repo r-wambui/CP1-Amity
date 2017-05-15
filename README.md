@@ -1,7 +1,7 @@
 # CP1-Amity
 CP1-Amity is an application which allocates people to offices and livingspaces at random
 
-![Screen shot] https://github.com/r-wambui/CP1-Amity/designs/amity.png
+![Screen shot](/designs/amity.png)
 ## Installation
 Prepare directory for the folder
 ```
