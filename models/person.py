@@ -6,7 +6,6 @@ class Person(object):
         self.job_type = job_type
         self.want_accomodation = want_accomodation
 
-
 class Fellow(Person):
 
     def __init__(self, first_name, last_name, job_type, want_accomodation):

@@ -12,7 +12,7 @@ class AmityTest(unittest.TestCase):
         """
         People can be added to Amity system """
         self.assertEqual(self.amity.add_person(
-            'Rose', 'Wambui', 'Fellow', 'Y'), 'Person added successfully')
+            'Rose', 'Wambui', 'fellow', 'Y'), 'Person added successfully')
 
     def test_add_person_already_exist(self):
         self.amity.add_person('rose', 'wambui', 'fellow', 'Y')
@@ -28,7 +28,7 @@ class AmityTest(unittest.TestCase):
 
     def test_add_person_name_can_only_be_string(self):
         self.assertEqual(self.amity.add_person(
-            6, 'Wambui', 'Fellow', 'Y'), 'Invalid input')
+            6, 'Wambui', 'fellow', 'Y'), 'Invalid input')
 
     def test_add_person_job_type_can_only_be_string(self):
         self.assertEqual(self.amity.add_person(
@@ -37,66 +37,43 @@ class AmityTest(unittest.TestCase):
     def test_add_person_staff_cannot_be_allocated_livingspace(self):
         """ A person whose role is a staff cannot be allocated to livingspace"""
         self.assertEqual(self.amity.add_person(
-            'Rose', 'Wambui', 'Staff', 'Y'),
+            'Rose', 'Wambui', 'staff', 'Y'),
             'A staff cannot be allocated a living space')
 
     def test_create_room(self):
         """
         Rooms can be created """
         self.assertEqual(self.amity.create_room(
-            'Vanhalla', 'LivingSpace'), 'Room created successfully')
+            'Vanhalla', 'livingspace'), 'Room created successfully')
 
     def test_create_room_cannot_create_existing_room(self):
-        self.amity.create_room('Cairo', 'Office')
+        self.amity.create_room('Cairo', 'office')
         self.assertEqual(self.amity.create_room(
-            'Cairo', 'Office'), 'Room already created')
+            'Cairo', 'office'), 'Room already created')
 
     def test_create_room_room_name_is_a_string(self):
         self.assertEqual(self.amity.create_room(
-            4, 'LivingSpace'), 'Invalid Input')
+            4, 'livingspace'), 'Invalid Input')
 
     def test_create_room_type_is_a_string(self):
         self.assertEqual(self.amity.create_room('Ruby', 9), 'Invalid Input')
 
-    def test_allocate_livingspace_can_only_accomodate_a_max_of_4(self):
-        self.amity.create_room('Ruby', 'LivingSpace')
-        self.amity.add_person('Winne', 'Mumbi', 'Fellow', 'Y')
-        self.amity.add_person('Rose', 'Wambui', 'Fellow', 'Y')
-        self.amity.add_person('Joan', 'Awinja', 'Fellow', 'Y')
-        self.amity.add_person('Winne', 'Mumbi', 'Fellow', 'Y')
-
-        self.assertEqual(self.amity.add_person(
-            'Julie', 'Wanja', 'Fellow', 'Ruby'),
-            'This room can only accomodate 4 people')
-
-    def test_allocate_office_can_only_accomodate_a_max_of_6(self):
-        self.amity.create_room('Round Table', 'Ofice')
-        self.amity.add_person('Winne', 'Mumbi', 'Fellow', 'Y')
-        self.amity.add_person('Rose', 'Wambui', 'Fellow', 'N')
-        self.amity.add_person('Joan', 'Awinja', 'Fellow', 'Y')
-        self.amity.add_person('Winne', 'Mumbi', 'Fellow', 'N')
-        self.amity.add_person('James', 'Oscar', 'Staff', 'N')
-        self.amity.add_person('Shem', 'Nashon', 'Staff', 'N')
-
-        self.assertEqual(self.amity.add_person(
-            'Julie', 'Wanja', 'Fellow', 'Y'), 'An office can only have a maximum of 6 people')
-
     def test_reallocate_person(self):
         """
         A person can move from one room to another """
-        self.amity.create_room('Cairo', 'Office')
-        self.amity.add_person('Rose', 'Wambui', 'Fellow', 'N')
+        self.amity.create_room('Cairo', 'office')
+        self.amity.add_person('Rose', 'Wambui', 'fellow', 'N')
 
-        self.amity.create_room('Asmara', 'Office')
+        self.amity.create_room('Asmara', 'office')
 
         self.assertEqual(self.amity.reallocate_person(
-            'Rose', 'Asmara'), 'You have been reallocated to a new room')
+            'Rose', 'Wambui', 'Asmara'), 'You have been reallocated to a new room')
 
     def test_reallocate_person_cannot_reallocate_to_the_same_room(self):
-        self.amity.create_room('Cairo', 'Office')
-        self.amity.add_person('rose', 'wambui', 'Fellow', 'N')
+        self.amity.create_room('Cairo', 'office')
+        self.amity.add_person('rose', 'wambui', 'fellow', 'N')
         self.assertEqual(self.amity.reallocate_person(
-            'rose', 'Cairo'), 'you cannot be reallocated to the same room')
+            'rose', 'wambui', 'Cairo'), 'you cannot be reallocated to the same room')
 
     def test_print_allocations(self):
         self.amity.create_room('Accra', 'Office')
@@ -109,11 +86,3 @@ class AmityTest(unittest.TestCase):
         self.amity.add_person('Rose', 'wambui', 'Fellow', 'Y')
         self.assertEqual(self.amity.print_unallocated('file_name'),
                          'Unallocated people have been saved to the file: \n')
-
-    def test_save_state(self):
-        self.assertEqual(self.amity.save_state(
-            'db_name'), 'Saved successfully')
-
-    def test_load_state(self):
-        self.assertEqual(self.amity.load_state(
-            'allocate_db'), 'data loaded successfully')

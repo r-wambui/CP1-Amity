@@ -9,7 +9,7 @@ Usage:
     amity print_unallocated [--o=<file_name>]
     amity load_people <filename>
     amity save_state [--db=<db_name]
-    amity load_state [--db=<db_name]
+    amity load_state <db_name>
     amity (-i | --interactive)
     amity (-h | --help | --version)
 
