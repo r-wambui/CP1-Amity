@@ -4,12 +4,12 @@ Usage:
     amity add_person <first_name> <last_name> <job_type> [<want_accomodation>]
     amity create_room <room_name> <room_type>
     amity print_allocations [--o=<file_name>]
-    amity reallocate_person <first_name><room_name>
+    amity reallocate_person <first_name> <last_name> <room_name>
     amity print_room <room_name>
     amity print_unallocated [--o=<file_name>]
     amity load_people <filename>
-    amity save_state <db_name>
-    amity load_state <db_name>
+    amity save_state [--db=<db_name]
+    amity load_state [--db=<db_name]
     amity (-i | --interactive)
     amity (-h | --help | --version)
 
@@ -62,9 +62,9 @@ def docopt_cmd(func):
 
 
 def intro():
-    cprint(figlet_format("Amity!", font="broadway"),
-           'blue',)
-    print("Welcome to Amity! Here is a list of commands to get you started." +
+    cprint(figlet_format('Amity!', font='calgphy2'),
+           'green',)
+    print('Welcome to Amity! Here is a list of commands to get you started.' +
           " Type 'help' anytime to access documented commands")
     cprint(__doc__, 'green')
 
@@ -79,7 +79,7 @@ class Interactive(cmd.Cmd):
 
         room_name = args['<room_name>']
         room_type = args['<room_type>']
-        amity.create_room(room_name, room_type)
+        cprint(amity.create_room(room_name, room_type), 'green')
 
     @docopt_cmd
     def do_add_person(self, args):
@@ -94,12 +94,13 @@ class Interactive(cmd.Cmd):
 
     @docopt_cmd
     def do_reallocate_person(self, args):
-        """Usage: reallocate_person <first_name> <room_name>"""
+        """Usage: reallocate_person <first_name> <last_name> <room_name>"""
 
         first_name = args['<first_name>']
+        last_name = args['<last_name>']
         room_name = args['<room_name>']
 
-        print(amity.reallocate_person(first_name, room_name))
+        print(amity.reallocate_person(first_name, last_name, room_name))
 
     @docopt_cmd
     def do_load_people(self, args):
@@ -130,38 +131,38 @@ class Interactive(cmd.Cmd):
     def do_print_room(self, args):
         """Usage: print_room <room_name>"""
 
-        room_name = args["<room_name>"]
+        room_name = args['<room_name>']
         amity.print_room(room_name)
 
     @docopt_cmd
     def do_save_state(self, args):
         """
-        Usage: save_state <db_name>
+        Usage: save_state [--db=<db_name]
 
         """
 
-        db_name = args["<db_name>"]
+        db_name = args['--db']
         amity.save_state(db_name)
 
     @docopt_cmd
     def do_load_state(self, args):
         """
-        Usage: load_state [<db_name>]
+        Usage: load_state <db_name>
 
         """
-        db_name = args["<db_name>"]
+        db_name = args['<db_name>']
         amity.load_state(db_name)
 
-    # def do_clear(self, arg):
-    #     """Clears screen"""
+    def do_clear(self, arg):
+        """Clears screen"""
 
-    #     os.system("clear")
+        os.system("clear")
 
-    # def do_quit(self, arg):
-    #     """Quits out of Interactive Mode."""
+    def do_quit(self, arg):
+        """Quits out of Interactive Mode."""
 
-    #     print("Don't be a stranger. Welcome back again!")
-    #     exit()
+        print("Don't be a stranger. Welcome back again!")
+        exit()
 
 
 opt = docopt(__doc__, sys.argv[1:])
