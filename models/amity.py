@@ -5,8 +5,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import MetaData, Column, Table
 from sqlalchemy.ext.declarative import declarative_base
 
-from persons import Fellow, Staff
-from rooms import Office, LivingSpace
+from person import Fellow, Staff
+from room import Office, LivingSpace
 from db.database import Person, Room, Base
 
 
