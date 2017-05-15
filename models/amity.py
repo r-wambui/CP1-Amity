@@ -206,7 +206,7 @@ class Amity(object):
                                     person.last_name for person in room.occupants) + '\n'
             else:
                 output += 'This room is empty.\n'
-        print output
+        print (output)
 
         # save the allocations of a text file
         if file_name:
@@ -230,7 +230,7 @@ class Amity(object):
         for person in self.persons:
             if person in self.unaccomodated_fellows:
                 output += (person.first_name + '  ' + person.last_name) + '\n'
-        print output
+        print (output)
 
         if file_name:
             with open(file_name, 'w') as f:
