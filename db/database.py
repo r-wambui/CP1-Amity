@@ -7,7 +7,8 @@ Base = declarative_base()
 
 class Person(Base):
     __tablename__ = 'People'
-    first_name = Column(String, primary_key=True)
+    id = Column(Integer, primary_key= True, autoincrement=True)
+    first_name = Column(String)
     last_name = Column(String)
     job_type = Column(String)
     want_accomodation = Column(String)
@@ -15,7 +16,8 @@ class Person(Base):
 
 class Room(Base):
     __tablename__ = 'Rooms'
-    room_name = Column(String, primary_key=True)
+    id = Column(Integer, primary_key= True, autoincrement=True)
+    room_name = Column(String)
     room_type = Column(String)
 
 
