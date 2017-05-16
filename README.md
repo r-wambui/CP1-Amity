@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/r-wambui/CP1-Amity.svg?branch=master)](https://travis-ci.org/r-wambui/CP1-Amity)
+[![Coverage Status](https://coveralls.io/repos/github/r-wambui/CP1-Amity/badge.svg?branch=master)](https://coveralls.io/github/r-wambui/CP1-Amity?branch=master)
 # CP1-Amity
 CP1-Amity is an application which allocates people to offices and livingspaces at random
 ![Screen shot](/designs/amity.png)
