@@ -1,5 +1,4 @@
-
-[![Build Status](https://travis-ci.org/r-wambui/CP1-Amity.svg?branch=master)]
+[![Build Status](https://travis-ci.org/r-wambui/CP1-Amity.svg?branch=master)](https://travis-ci.org/r-wambui/CP1-Amity)
 [![Coverage Status](https://coveralls.io/repos/github/r-wambui/CP1-Amity/badge.svg)](https://coveralls.io/github/r-wambui/CP1-Amity)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/804b299c059947179905c68ce14c292c)](https://www.codacy.com/app/r-wambui/CP1-Amity?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=r-wambui/CP1-Amity&amp;utm_campaign=Badge_Grade)
 # CP1-Amity
