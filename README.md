@@ -1,0 +1,2 @@
+# CP1-Amity
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/804b299c059947179905c68ce14c292c)](https://www.codacy.com/app/r-wambui/CP1-Amity?utm_source=github.com&utm_medium=referral&utm_content=r-wambui/CP1-Amity&utm_campaign=badger)
