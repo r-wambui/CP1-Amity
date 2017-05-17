@@ -289,7 +289,6 @@ class Amity(object):
                 persons += (occupant.first_name + ' '  + occupant.last_name) + ' ' 
             room = Room(id=None, room_name=room.room_name,
                         room_type=room.room_type, occupants=persons)
-            print('Room type: {}'.format(type(room)))
             session.add(room)
             session.commit()
         session.close()
@@ -311,7 +310,7 @@ class Amity(object):
                 self.persons.append(person)
                 self.staffs.append(person)
                 self.unallocated_persons.append(person)
-                
+
             else:
                 person = Fellow(first_name, last_name,
                                 job_type, want_accomodation)
