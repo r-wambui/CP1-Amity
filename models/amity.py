@@ -28,7 +28,7 @@ class Amity(object):
 
     def allocate_office(self):
         """Method that allocate people to offices at random """
-        if len(self.vacant_offices) > 0 and len(self.unallocated_persons) > 0:
+        if len(self.vacant_offices) is not 0 and len(self.unallocated_persons) is not 0:
             secure_random = random.SystemRandom()
             person = self.unallocated_persons[-1]
             office = secure_random.choice(self.vacant_offices)
@@ -44,7 +44,7 @@ class Amity(object):
 
     def allocate_livingspace(self):
         """ Method which allocate people to livingspaces at random"""
-        if len(self.vacant_livingspaces) > 0 and len(self.unaccomodated_fellows) > 0:
+        if len(self.vacant_livingspaces) is not  0 and len(self.unaccomodated_fellows) is not 0:
             secure_random = random.SystemRandom()
             person = self.unaccomodated_fellows[-1]
             livingspace = secure_random.choice(self.vacant_livingspaces)
@@ -59,7 +59,7 @@ class Amity(object):
 
     def add_person(self, first_name, last_name, job_type, want_accomodation=None):
         """ Adding people to amity system"""
-        if type(first_name) == str and type(last_name) == str and type(job_type) == str:
+        if type(first_name) is str and type(last_name) is str and type(job_type) is str:
 
             if [person for person in self.persons
                 if first_name.upper() == person.first_name.upper() and
@@ -87,6 +87,7 @@ class Amity(object):
                 self.unallocated_persons.append(person)
                 self.unaccomodated_fellows.append(person)
                 self.allocate_office()
+                print ('person added successfully')
 
                 if want_accomodation == 'Y':
                     self.allocate_livingspace()
@@ -101,7 +102,7 @@ class Amity(object):
 
     def create_room(self, room_name, room_type):
         """ Method that creates rooms, both offices and livingspaces"""
-        if type(room_name) == str and type(room_type) == str:
+        if type(room_name) is str and type(room_type) is str:
 
             if [room for room in self.rooms
                 if room_name.upper() == room.room_name.upper() and
@@ -196,6 +197,8 @@ class Amity(object):
             return 'file not found'
 
     def print_allocations(self, file_name):
+        if not self.rooms:
+            print('No allocations')
         output = ''
         # check the room name and type from the room list
         for room in self.rooms:
@@ -217,6 +220,8 @@ class Amity(object):
 
     def print_unallocated(self, file_name):
         """ prints unallocated people on the screen and saves to a text file """
+        if not self.unallocated_persons + self.unaccomodated_fellows:
+            print ('No unallocated persons')
         output = ''
         output += '-' * 50 +'\n'
         output += 'Unallocated to offices' + '\n'
@@ -258,28 +263,38 @@ class Amity(object):
         Save all application data to the database 'database.db',
         or optionally, a user-defined database 
         """
-
         if db_name:
             engine = create_engine('sqlite:///{}'.format(db_name))
         else:
             engine=create_engine('sqlite:///database.db')
-       
+
         Base.metadata.create_all(engine)
         Session = sessionmaker(bind=engine)
         session = Session()
 
+
         for person in self.persons:
+            room_allocated = ''
+            for room in self.rooms:
+                if person in room.occupants:
+                    room_allocated += room.room_name
             person = Person(id=None, first_name=person.first_name,
-                            last_name=person.last_name, job_type=person.job_type, want_accomodation=person.want_accomodation)
+                            last_name=person.last_name, job_type=person.job_type, want_accomodation=person.want_accomodation, room_allocated=room_allocated)
             session.add(person)
             session.commit()
 
         for room in self.rooms:
+            persons = ''
+            for occupant in room.occupants:
+                persons += (occupant.first_name + ' '  + occupant.last_name) + ' ' 
             room = Room(id=None, room_name=room.room_name,
-                        room_type=room.room_type)
+                        room_type=room.room_type, occupants=persons)
+            print('Room type: {}'.format(type(room)))
             session.add(room)
             session.commit()
         session.close()
+        print ('data saved successfully to the database')
+
 
     def load_state(self, db_name):
         """ loads data from a user defined database to the application """
@@ -289,14 +304,14 @@ class Amity(object):
         Session = sessionmaker(bind=engine)
         session = Session()
 
-        for first_name, last_name, job_type, want_accomodation in session.query(Person.first_name, Person.last_name, Person.job_type, Person.want_accomodation):
+        for first_name, last_name, job_type, want_accomodation, room_allocated in session.query(Person.first_name, Person.last_name, Person.job_type, Person.want_accomodation, Person.room_allocated):
             if job_type == 'staff':
                 person = Staff(first_name, last_name,
                                job_type, want_accomodation)
                 self.persons.append(person)
                 self.staffs.append(person)
                 self.unallocated_persons.append(person)
-
+                
             else:
                 person = Fellow(first_name, last_name,
                                 job_type, want_accomodation)
@@ -304,7 +319,8 @@ class Amity(object):
                 self.fellows.append(person)
                 self.unaccomodated_fellows.append(person)
 
-        for room_name, room_type in session.query(Room.room_name, Room.room_type):
+
+        for room_name, room_type, occupants in session.query(Room.room_name, Room.room_type, Room.occupants):
             if room_type == 'office':
                 room = Office(room_name, room_type)
                 self.rooms.append(room)
@@ -313,3 +329,5 @@ class Amity(object):
                 room = LivingSpace(room_name, room_type)
                 self.rooms.append(room)
                 self.livingspaces.append(room)
+        print ('Data loaded succesfully')
+
