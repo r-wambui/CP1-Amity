@@ -12,6 +12,7 @@ class Person(Base):
     last_name = Column(String)
     job_type = Column(String)
     want_accomodation = Column(String)
+    room_allocated = Column(String)
 
 
 class Room(Base):
@@ -19,6 +20,7 @@ class Room(Base):
     id = Column(Integer, primary_key= True, autoincrement=True)
     room_name = Column(String)
     room_type = Column(String)
+    occupants = Column(String)
 
 
 engine = create_engine('sqlite:///database.db')
